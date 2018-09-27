@@ -6,11 +6,13 @@
 //  Copyright © 2018 Orange Octopus. All rights reserved.
 //
 
-import Foundation
+//usign coredata means this class already declared
 
-class Item: Codable{
+//import Foundation
+
+//class Item: Codable{
     //in wsift 4 - codable = Encodable , Decodable
     //for tem to be encodable properties need to be standard data types
-    var title: String = ""
-    var done: Bool = false
-}
+    //var title: String = ""v
+    //var done: Bool = false
+//}
