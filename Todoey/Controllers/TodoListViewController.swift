@@ -35,26 +35,7 @@ class TodoListViewController: UITableViewController{
         
         
         print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
-        
-//        searchBar.delegate = self
-        
-        //initialised once no need anymore
-//        let newItem = Item()
-//        newItem.title = "orange"
-//        newItem.done = true
-//        itemArray.append(newItem)
-//
-//        let newItem3 = Item()
-//        newItem3.title = "orange octopus"
-//        itemArray.append(newItem3)
-        
-        //not good to use for arrays
-//        if let items = defaults.array(forKey: "TodoListArray") as? [Item] {
-//            itemArray = items
-//        }
-        
-        //moved loading to seting selected category
-//        loadItems()
+
     }
 
     override func didReceiveMemoryWarning() {
@@ -77,14 +58,7 @@ class TodoListViewController: UITableViewController{
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        print(itemArray[indexPath.row])
-        
-        //update
-//        itemArray[indexPath.row].setValue("completed", forKey: "title")
-        
-//        Delete - remove from array then remove from context - to not mess up indexpath orders
-//        itemArray.remove(at: indexPath.row)
-//        context.delete(itemArray[indexPath.row])
+
         
         itemArray[indexPath.row].done = !itemArray[indexPath.row].done
        saveItems() //save chekmark save
@@ -112,10 +86,7 @@ class TodoListViewController: UITableViewController{
             self.itemArray.append(newItem) //textfields always have somehting, even if empty so force unwrap
             
             //save updated array to use defualts
-            
-            //not good to use for arrays
-//            self.defaults.set(self.itemArray, forKey: "TodoListArray")
-            
+
             self.saveItems()
             
             
@@ -136,14 +107,7 @@ class TodoListViewController: UITableViewController{
 
     //MARK:  model manipulation methods
     func saveItems(){
-        //NSencoder
-//        let encoder = PropertyListEncoder()
-//        do{
-//            let data = try encoder.encode(itemArray)
-//            try data.write(to: dataFilePath!)
-//        }catch{
-//            print("Eerro encoidng array, \(error)")
-//        }
+
         
         //commit context to permanet storage in contaniner
         do {
@@ -159,22 +123,7 @@ class TodoListViewController: UITableViewController{
     func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest(), predicate: NSPredicate? = nil){
         //internal(request) and external(with) parameters
         
-// //nsdecoding
-//        // doSomething succeeded, and result is unwrapped.
-////        One final note here, by using try? note that you’re discarding the error that took place, as it’s translated to a nil. Use try? when you’re focusing more on successes and failure, not on why things failed.
-//        if let data = try? Data(contentsOf: dataFilePath!) {
-//
-//            let decoder = PropertyListDecoder()
-//        do{
-//            itemArray = try decoder.decode([Item].self, from: data)
-//            //use dot self because we not refering to array of items but the type array of items
-//        }catch {
-//            print("\(error)")
-//        }
-//    }
-        
-//        let request: NSFetchRequest<Item> = Item.fetchRequest()
-        
+
         let Categorypredicate = NSPredicate(format: "parentCategory.name MATCHES %@", selectedCategory!.name!)
         
         if let additionalPredicate = predicate{
@@ -209,11 +158,7 @@ extension TodoListViewController: UISearchBarDelegate {
         //query
         let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
         //[cd] makes the string searhc not case and diacritic sensitive
-        
-//
-//        let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
-//        request.sortDescriptors = [sortDescriptor]
-        
+       
         request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
         
         //load data - but this time request has predicates
