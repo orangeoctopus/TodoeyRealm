@@ -13,14 +13,12 @@ class CategoryViewController: UITableViewController {
     
     let realm = try! Realm() //try! is code smell - becaus realm may be null here at initialisation if resources are constrained - but can onyl practice on first time on a thread - doc says ok to do this
     
-    var categoryArray = [Category]()
-    
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    var categories : Results<Category>? //Reseult object is what you get everytime you query realm db
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        loadCategories()
+        loadCategories()
 
     }
     
@@ -28,14 +26,14 @@ class CategoryViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let  cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath)
-        let category =  categoryArray[indexPath.row]
-        cell.textLabel?.text = category.name
+        
+        cell.textLabel?.text = categories?[indexPath.row].name ?? "No Categories added"
         
         return cell
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categoryArray.count
+        return categories?.count ?? 1 //nil coelessing operator, if category is nill, return 1
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -50,7 +48,7 @@ class CategoryViewController: UITableViewController {
         let destinationVC = segue.destination as! TodoListViewController //if statement if other possible destinations
         
         if let indexPath = tableView.indexPathForSelectedRow {
-            destinationVC.selectedCategory = categoryArray[indexPath.row]
+            destinationVC.selectedCategory = categories?[indexPath.row]
             }
     }
     
@@ -70,17 +68,12 @@ class CategoryViewController: UITableViewController {
         tableView.reloadData()
     }
     
-//    func loadCategories() {
-//        let request : NSFetchRequest<Category> = Category.fetchRequest()
-//
-//        do {
-//            categoryArray = try context.fetch(request)
-//        } catch {
-//            print("Error saving category \(error)")
-//        }
-//
-//        tableView.reloadData()
-//    }
+    func loadCategories() {
+        
+       categories = realm.objects(Category.self) //pull out all objects in realm of type cateogry
+
+        tableView.reloadData()
+    }
 
     //MARK - Add New Categories
     
@@ -94,7 +87,7 @@ class CategoryViewController: UITableViewController {
             let newCategory = Category()
             newCategory.name = textField.text!
             
-            self.categoryArray.append(newCategory)
+            //no need to append - rlts is auto updating
             
             self.save(category: newCategory)
         }
