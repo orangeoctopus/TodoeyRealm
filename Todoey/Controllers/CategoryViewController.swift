@@ -8,6 +8,7 @@
 
 import UIKit
 import RealmSwift
+import ChameleonFramework
 
 class CategoryViewController: SwipeTableViewController {
     
@@ -31,7 +32,8 @@ class CategoryViewController: SwipeTableViewController {
         
         //now further modify cell
         cell.textLabel?.text = categories?[indexPath.row].name ?? "No Categories Added Yet"
-        
+        cell.backgroundColor = UIColor(hexString: categories?[indexPath.row].colour ?? "#6196FF")
+        cell.textLabel?.textColor = ContrastColorOf(cell.backgroundColor!, returnFlat: true)
         return cell
     }
     
@@ -105,6 +107,7 @@ class CategoryViewController: SwipeTableViewController {
         let action = UIAlertAction(title: "Add", style: .default) { (action) in
             let newCategory = Category()
             newCategory.name = textField.text!
+            newCategory.colour = UIColor.randomFlat.hexValue()
             
             //no need to append - rlts is auto updating
             

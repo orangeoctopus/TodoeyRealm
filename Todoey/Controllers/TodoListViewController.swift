@@ -8,6 +8,7 @@
 
 import UIKit
 import RealmSwift
+import ChameleonFramework
 
 class TodoListViewController: SwipeTableViewController{
 
@@ -47,6 +48,17 @@ class TodoListViewController: SwipeTableViewController{
         if let item = todoItems?[indexPath.row] {
             cell.textLabel?.text = item.title
             cell.accessoryType = item.done ? .checkmark : .none
+            
+            //safe to force unwrap count here because this is already inside the let item = ... so todoitems wont be nil
+            //item is not nil here - and so if saved it must have a category so selectedcategory will not b nil hence can force unwrap
+            //optional chaning - darken only if colour is not nil
+            if let colour = UIColor(hexString: selectedCategory!.colour)?.darken(byPercentage: CGFloat(indexPath.row)/CGFloat(todoItems!.count)) {
+                
+                cell.backgroundColor = colour
+                cell.textLabel?.textColor = ContrastColorOf(colour, returnFlat: true)
+            }
+            
+            
         } else {
             cell.textLabel?.text = "No items added"
         }
