@@ -9,7 +9,7 @@
 import UIKit
 import RealmSwift
 
-class TodoListViewController: UITableViewController{
+class TodoListViewController: SwipeTableViewController{
 
     var todoItems : Results<Item>?
     
@@ -33,7 +33,7 @@ class TodoListViewController: UITableViewController{
         // Do any additional setup after loading the view, typically from a nib.
         
         
-        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+//        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
 
     }
 
@@ -43,7 +43,7 @@ class TodoListViewController: UITableViewController{
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let  cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         if let item = todoItems?[indexPath.row] {
             cell.textLabel?.text = item.title
             cell.accessoryType = item.done ? .checkmark : .none
@@ -118,20 +118,7 @@ class TodoListViewController: UITableViewController{
         present(alert, animated: true, completion: nil)
     }
 
-    //MARK:  model manipulation methods
-//    func saveItems(){
-//
-//
-//        //commit context to permanet storage in contaniner
-//        do {
-//            try context.save()
-//        }catch {
-//            print(error)
-//        }
-//
-//        tableView.reloadData()
-//
-//    }
+
     
     func loadItems(){
         todoItems = selectedCategory?.items.sorted(byKeyPath: "title", ascending: true)
@@ -141,6 +128,21 @@ class TodoListViewController: UITableViewController{
 
     }
     
+    override func updateModel(at indexPath: IndexPath) {
+        super.updateModel(at: indexPath) //call to super class, otherise super class method is not called - not needed here but just for testing
+        if let ItemForDeletion = self.todoItems?[indexPath.row] {
+            do{
+                try self.realm.write{
+                    self.realm.delete(ItemForDeletion)
+                }
+            } catch {
+                print("Error deleting \(error)")
+            }
+            
+            tableView.reloadData()
+        }
+        
+    }
 
 
 }

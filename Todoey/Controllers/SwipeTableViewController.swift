@@ -13,26 +13,24 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        tableView.rowHeight = 80
     }
     
+    //TableView Datasource methods
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        //change identifiers for category and item to Cell in staoryboard
+        let  cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! SwipeTableViewCell
+//        cell.textLabel?.text = categories?[indexPath.row].name ?? "No Categories added"
+        cell.delegate = self
+        return cell
+    }
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
         guard orientation == .right else { return nil }
         
         let deleteAction = SwipeAction(style: .destructive, title: "Delete") { action, indexPath in
             // handle action by updating model with deletion
-//            if let categoryForDeletion = self.categories?[indexPath.row] {
-//                do{
-//                    try self.realm.write{
-//                        self.realm.delete(categoryForDeletion)
-//                    }
-//                } catch {
-//                    print("Error deleting \(error)")
-//                }
-//
-//                tableView.reloadData()
-//            }
-            print("delte stuffo")
+            self.updateModel(at: indexPath)
             
         }
         
@@ -40,6 +38,10 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
         deleteAction.image = UIImage(named: "delete-icon")
         
         return [deleteAction]
+    }
+    
+    func updateModel(at indexPath: IndexPath){
+        //update model - overriden in the other view controllers child
     }
     
     func collectionView(_ collectionView: UICollectionView, editActionsOptionsForItemAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> SwipeOptions {
