@@ -8,6 +8,7 @@
 
 import Foundation
 import RealmSwift
+import SwipeCellKit
 
 class Category: Object {
     @objc dynamic var name: String = ""
