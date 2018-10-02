@@ -16,6 +16,8 @@ class TodoListViewController: SwipeTableViewController{
     
     let realm = try! Realm()
     
+    @IBOutlet weak var searchBar: UISearchBar!
+    
     var selectedCategory : Category? {
         didSet{
             loadItems(); //so when we call load items we can be certain selected category is set
@@ -25,7 +27,6 @@ class TodoListViewController: SwipeTableViewController{
     
     let defaults = UserDefaults.standard
     
-    @IBOutlet weak var searchBar: UISearchBar!
     //    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
     
 
@@ -33,9 +34,32 @@ class TodoListViewController: SwipeTableViewController{
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
+        //but nav controller may not be set yet - so move to viewwillappear
+//        if let colourHex = selectedCategory?.colour {
+//            guard let navBar = navigationController?.navigationBar else {fatalError("NAvbar not exist!")}
+//            navBar.barTintColor = UIColor(hexString: colourHex)
+//        }
         
 //        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
 
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        //use gurad if you think it will work 99% of teh time, otherwise if 50% or something, better use if let
+        
+        if let colourHex = selectedCategory?.colour {
+            title = selectedCategory!.name
+            guard let navBar = navigationController?.navigationBar else {fatalError("NAvbar not exist!")}
+            
+            if let navBarColour = UIColor(hexString: colourHex){
+                navBar.barTintColor = navBarColour
+                searchBar.barTintColor = navBarColour
+                navBar.tintColor = ContrastColorOf(navBarColour, returnFlat: true)
+                navBar.largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor : ContrastColorOf(navBarColour, returnFlat: true)]
+                    //colour needs to be default in storyboard
+            }
+            
+        }
     }
 
     override func didReceiveMemoryWarning() {
