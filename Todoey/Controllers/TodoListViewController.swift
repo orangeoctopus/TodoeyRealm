@@ -45,26 +45,35 @@ class TodoListViewController: SwipeTableViewController{
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        //use gurad if you think it will work 99% of teh time, otherwise if 50% or something, better use if let
         
-        if let colourHex = selectedCategory?.colour {
-            title = selectedCategory!.name
-            guard let navBar = navigationController?.navigationBar else {fatalError("NAvbar not exist!")}
-            
-            if let navBarColour = UIColor(hexString: colourHex){
-                navBar.barTintColor = navBarColour
-                searchBar.barTintColor = navBarColour
-                navBar.tintColor = ContrastColorOf(navBarColour, returnFlat: true)
-                navBar.largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor : ContrastColorOf(navBarColour, returnFlat: true)]
-                    //colour needs to be default in storyboard
-            }
-            
-        }
+        
+        guard let colourHex = selectedCategory?.colour else {fatalError("selected Category not exist")}
+        title = selectedCategory!.name //runs after above check tehre is category
+        
+        updateNavBar(withHexCode: colourHex)
+        
+    
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    override func viewWillDisappear(_ animated: Bool) {
+        
+       updateNavBar(withHexCode: "1D98F6")
+    }
+    
+    //MARK - Nav bar setup methods
+    
+    func updateNavBar(withHexCode colourHexCode: String){
+        //use gurad if you think it will work 99% of teh time, otherwise if 50% or something, better use if let
+
+        guard let navBar = navigationController?.navigationBar else {fatalError("NAvbar not exist!")}
+        
+        
+        guard let navBarColour = UIColor(hexString: colourHexCode) else {fatalError("there should be colour")}
+        navBar.barTintColor = navBarColour
+        searchBar.barTintColor = navBarColour
+        navBar.tintColor = ContrastColorOf(navBarColour, returnFlat: true)
+        navBar.largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor : ContrastColorOf(navBarColour, returnFlat: true)]
+        //colour needs to be default in storyboard
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
